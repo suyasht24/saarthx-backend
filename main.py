@@ -9,7 +9,7 @@ from chatbot import generate_answer
 
 app = FastAPI()
 
-# Enable CORS (VERY IMPORTANT for frontend)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,19 +18,40 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load and prepare data ONCE
-data = load_pdf("company_data.pdf")
-chunks = chunk_text(data)
-db = create_vector_store(chunks)
+# 🚀 Global DB variable
+db = None
+
 
 class ChatRequest(BaseModel):
     message: str
 
+
+# 🚀 Load DB only when needed
+def get_db():
+    global db
+
+    if db is None:
+        data = load_pdf("company_data.pdf")
+        chunks = chunk_text(data)
+        db = create_vector_store(chunks)
+
+    return db
+
+
+@app.get("/")
+def home():
+    return {"message": "SaarthX API running successfully"}
+
+
 @app.post("/chat")
 def chat(req: ChatRequest):
+
     query = req.message
 
-    results = db.similarity_search(query, k=3)
+    db_instance = get_db()
+
+    results = db_instance.similarity_search(query, k=3)
+
     context = " ".join([r.page_content for r in results])
 
     answer = generate_answer(query, context)
