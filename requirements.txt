@@ -3,7 +3,7 @@ uvicorn==0.30.6
 langchain==0.3.7
 langchain-community==0.3.7
 langchain-huggingface==0.1.2
-faiss-cpu==1.8.0.post1
+faiss-cpu==1.13.2
 sentence-transformers==2.2.2
 transformers==4.30.2
 tokenizers==0.13.3
