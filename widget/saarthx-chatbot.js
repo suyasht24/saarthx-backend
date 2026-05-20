@@ -410,7 +410,7 @@ window.addEventListener("load", function () {
 
     try {
 
-      const res = await fetch("saarthx-backend.railway.internal", {
+      const res = await fetch("saarthx-backend-production.up.railway.app", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
